@@ -9,10 +9,10 @@ if [ "$fedora_version" -lt 38 ]; then
     exit 1
 fi
 
+##############################" Système "##############################
 # Mise à jour du système
 echo -e "\033[0;34mMise a jour et upgrade du system\033[0m"
 sudo dnf update -y && sudo dnf upgrade -y
-
 # Installation de logiciels
 sudo dnf install -y \
     git \
@@ -23,26 +23,41 @@ sudo dnf install -y \
     tmux \
     flatpak \
     zellij \
-    
+echo -e "\033[0;32mFinish Part\033[0m"
 
 ##############################" zoxide "##############################
-echo -e "\033[0;34mInstallation de zoxide\033[0m"
+echo -e "\033[0;32mInstallation de zoxide\033[0m"
 # Installation de zoxide
 sudo dnf install -y zoxide
 # Ajout de zoxide à la configuration de Zsh
 echo 'eval "$(zoxide init zsh)"' >> ~/.zshrc
+echo -e "\033[0;32mFinish Part\033[0m"
 
 ##############################" Docker "######################################
-echo -e "\033[0;34mInstallation de Docker\033[0m"
-# Installation de Docker
+echo -e "\033[0;32mInstallation de Docker\033[0m"
+# Remove old versions
+sudo dnf remove docker \
+         docker-client \
+         docker-client-latest \
+         docker-common \
+         docker-latest \
+         docker-latest-logrotate \
+         docker-logrotate \
+         docker-selinux \
+         docker-engine-selinux \
+         docker-engine
+# Setup the repository
+sudo dnf -y install dnf-plugins-core
 sudo dnf config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo
-sudo dnf install -y docker-ce docker-ce-cli containerd.io
+# Installation de Docker
+sudo dnf install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 # Démarrage de Docker
 sudo systemctl start docker
 sudo systemctl enable docker
+echo -e "\033[0;32mFinish Part\033[0m"
 
 ##############################" FlatPak "##############################
-echo -e "\033[0;34mInstallation des apps Flatpak\033[0m"
+echo -e "\033[0;32mInstallation des apps Flatpak\033[0m"
 # Ajout du dépôt Flathub (dépôt central de Flatpak)
 sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 # Installation d'applications Flatpak
@@ -58,7 +73,15 @@ flatpak install -y flathub com.github.IsmaelMartinez.teams_for_linux
 flatpak install -y flathub org.gnome.Boxes
 flatpak install -y flathub io.github.flattool.Warehouse
 flatpak install -y flathub com.raggesilver.BlackBox
-flatpak install -y flathub com.getpostman.Postman
+echo -e "\033[0;32mFinish Part\033[0m"
+
+##############################" Lazy Git "##############################
+echo -e "\033[0;34mInstallation de LazyGit\033[0m"
+# enable copr
+sudo dnf copr enable atim/lazygit -y
+# Installation de LazyGit
+sudo dnf install lazygit -y
+echo -e "\033[0;32mFinish Part\033[0m"
 
 ##############################" JetBrain "##############################
 echo -e "\033[0;34mInstallation de Toolbox\033[0m"
@@ -68,7 +91,7 @@ wget https://download.jetbrains.com/toolbox/jetbrains-toolbox-2.3.1.31116.tar.gz
 sudo tar -xzf jetbrains-toolbox-2.3.1.31116.tar.gz -C /opt
 # Suppression de l'archive
 rm jetbrains-toolbox-2.3.1.31116.tar.gz
-
+echo -e "\033[0;32mFinish Part\033[0m"
 
 ##############################" Oh My Zsh "##############################
 echo -e "\033[0;34mInstallation et configuration de OMZ\033[0m"
@@ -82,6 +105,7 @@ cat ZSH_THEME="powerlevel10k/powerlevel10k" >> ~/.zshrc
 # Installation des plugins Zsh
 git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
 git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+echo -e "\033[0;32mFinish Part\033[0m"
 
 ##############################" Dump epitech "##############################
 echo -e "\033[0;34mInstallation et configuration du dump Epitech\033[0m"
@@ -91,6 +115,7 @@ git clone https://github.com/Epitech/dump.git ~/dump
 cd ~/dump
 # Lancement du script d'installation
 sudo ./install_packages_dump.sh
+echo -e "\033[0;32mFinish Part\033[0m"
 
 ##############################" CSFML "##############################
 echo -e "\033[0;34mInstallation de la CSFML\033[0m"
@@ -110,13 +135,14 @@ cmake .
 make
 sudo make install
 cd ..
+echo -e "\033[0;32mFinish Part\033[0m"
 
 ##############################" Neovim "##############################
 echo -e "\033[0;34m*configuration de neovim\033[0m"
 mv ~/.config/nvim ~/.config/nvim.backup
 rm -rf ~/.local/share/nvim
 git clone -b v2.0 https://github.com/NvChad/NvChad ~/.config/nvim --depth 1
-
+echo -e "\033[0;32mFinish Part\033[0m"
 
 source ~/.zshrc
 echo -e "\033[32mLe script a terminé avec succès.\033[0m"
