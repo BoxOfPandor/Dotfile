@@ -117,6 +117,18 @@ cd ~/dump
 sudo ./install_packages_dump.sh
 echo -e "\033[0;32mFinish Part\033[0m"
 
+##############################" Mango & Ananas "##############################
+echo -e "\033[0;34mInstallation de Mango et Ananas\033[0m"
+# Installation style cheker
+git clone https://github.com/Epitech/coding-style-checker.git ~/coding-style-checker
+cd ~/coding-style-checker
+sudo ./coding-style.sh
+rm -rf ~/coding-style-checker
+# Installation de Mango
+sudo rm /bin/mango; sudo wget https://raw.githubusercontent.com/Clement-Z4RM/Mango/main/mango.py -O /bin/mango && sudo chmod +x /bin/mango
+# Installation de Ananas
+curl -sLO 3z.ee/ananas && bash ananas
+
 ##############################" CSFML "##############################
 echo -e "\033[0;34mInstallation de la CSFML\033[0m"
 # Installation des dépendances pour SFML et CSFML
