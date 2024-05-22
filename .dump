@@ -20,10 +20,6 @@ sudo dnf install -y \
 sudo dnf install -y zoxide
 # Ajout de zoxide à la configuration de Zsh
 echo 'eval "$(zoxide init zsh)"' >> ~/.zshrc
-# Installation de fzf
-sudo dnf install fzf
-# Set up fzf key bindings and fuzzy completion
-source <(fzf --zsh)
 
 ##############################" Docker "######################################
 # Installation de Docker
