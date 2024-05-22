@@ -1,6 +1,16 @@
 #!/bin/bash
 
+# Récupérer le numéro de version de Fedora
+fedora_version=$(grep -oP '(?<=VERSION_ID=)[0-9]+' /etc/os-release)
+
+# Vérifier si la version de Fedora est 38 ou supérieure
+if [ "$fedora_version" -lt 38 ]; then
+    echo -e "\033[31mCe script nécessite Fedora 38 ou une version ultérieure.\033[0m"
+    exit 1
+fi
+
 # Mise à jour du système
+echo -e "\033[0;34mMise a jour et upgrade du system\033[0m"
 sudo dnf update -y && sudo dnf upgrade -y
 
 # Installation de logiciels
@@ -16,12 +26,14 @@ sudo dnf install -y \
     
 
 ##############################" zoxide "##############################
+echo -e "\033[0;34mInstallation de zoxide\033[0m"
 # Installation de zoxide
 sudo dnf install -y zoxide
 # Ajout de zoxide à la configuration de Zsh
 echo 'eval "$(zoxide init zsh)"' >> ~/.zshrc
 
 ##############################" Docker "######################################
+echo -e "\033[0;34mInstallation de Docker\033[0m"
 # Installation de Docker
 sudo dnf config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo
 sudo dnf install -y docker-ce docker-ce-cli containerd.io
@@ -30,6 +42,7 @@ sudo systemctl start docker
 sudo systemctl enable docker
 
 ##############################" FlatPak "##############################
+echo -e "\033[0;34mInstallation des apps Flatpak\033[0m"
 # Ajout du dépôt Flathub (dépôt central de Flatpak)
 sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 # Installation d'applications Flatpak
@@ -48,6 +61,7 @@ flatpak install -y flathub com.raggesilver.BlackBox
 flatpak install -y flathub com.getpostman.Postman
 
 ##############################" JetBrain "##############################
+echo -e "\033[0;34mInstallation de Toolbox\033[0m"
 # Téléchargement de l'archive
 wget https://download.jetbrains.com/toolbox/jetbrains-toolbox-2.3.1.31116.tar.gz
 # Installation de JetBrains Toolbox
@@ -57,6 +71,7 @@ rm jetbrains-toolbox-2.3.1.31116.tar.gz
 
 
 ##############################" Oh My Zsh "##############################
+echo -e "\033[0;34mInstallation et configuration de OMZ\033[0m"
 # Definir Zsh comme shell par défaut
 chsh -s $(which zsh)
 # Installation de Oh My Zsh
@@ -69,6 +84,7 @@ git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-m
 git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
 
 ##############################" Dump epitech "##############################
+echo -e "\033[0;34mInstallation et configuration du dump Epitech\033[0m"
 # Téléchargement du dump
 git clone https://github.com/Epitech/dump.git ~/dump
 # Aller dans le dossier dump
@@ -77,6 +93,7 @@ cd ~/dump
 sudo ./install_packages_dump.sh
 
 ##############################" CSFML "##############################
+echo -e "\033[0;34mInstallation de la CSFML\033[0m"
 # Installation des dépendances pour SFML et CSFML
 sudo dnf install -y cmake gcc gcc-c++ libX11-devel libXrandr-devel libXcursor-devel libXi-devel libXext-devel mesa-libGL-devel mesa-libEGL-devel systemd-devel
 # Télécharger et installer SFML
@@ -95,10 +112,11 @@ sudo make install
 cd ..
 
 ##############################" Neovim "##############################
+echo -e "\033[0;34m*configuration de neovim\033[0m"
 mv ~/.config/nvim ~/.config/nvim.backup
 rm -rf ~/.local/share/nvim
 git clone -b v2.0 https://github.com/NvChad/NvChad ~/.config/nvim --depth 1
 
 
 source ~/.zshrc
-echo "Installation terminée!"
+echo -e "\033[32mLe script a terminé avec succès.\033[0m"
