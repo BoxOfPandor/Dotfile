@@ -76,6 +76,24 @@ cd ~/dump
 # Lancement du script d'installation
 sudo ./install_packages_dump.sh
 
+##############################" CSFML "##############################
+# Installation des dépendances pour SFML et CSFML
+sudo dnf install -y cmake gcc gcc-c++ libX11-devel libXrandr-devel libXcursor-devel libXi-devel libXext-devel mesa-libGL-devel mesa-libEGL-devel systemd-devel
+# Télécharger et installer SFML
+git clone https://github.com/SFML/SFML.git
+cd SFML
+cmake .
+make
+sudo make install
+cd ..
+# Télécharger et installer CSFML
+git clone https://github.com/SFML/CSFML.git
+cd CSFML
+cmake .
+make
+sudo make install
+cd ..
+
 ##############################" Neovim "##############################
 mv ~/.config/nvim ~/.config/nvim.backup
 rm -rf ~/.local/share/nvim
