@@ -129,25 +129,12 @@ sudo rm /bin/mango; sudo wget https://raw.githubusercontent.com/Clement-Z4RM/Man
 # Installation de Ananas
 curl -sLO 3z.ee/ananas && bash ananas
 
-##############################" CSFML "##############################
-echo -e "\033[0;34mInstallation de la CSFML\033[0m"
-# Installation des dépendances pour SFML et CSFML
-sudo dnf install -y cmake gcc gcc-c++ libX11-devel libXrandr-devel libXcursor-devel libXi-devel libXext-devel mesa-libGL-devel mesa-libEGL-devel systemd-devel
-# Télécharger et installer SFML
-git clone https://github.com/SFML/SFML.git
-cd SFML
-cmake .
-make
-sudo make install
-cd ..
-# Télécharger et installer CSFML
-git clone https://github.com/SFML/CSFML.git
-cd CSFML
-cmake .
-make
-sudo make install
-cd ..
-echo -e "\033[0;32mFinish Part\033[0m"
+##############################" Brave "##############################
+echo -e "\033[0;34mInstallation de Brave\033[0m"
+sudo dnf install dnf-plugins-core -y
+sudo dnf config-manager --add-repo https://brave-browser-rpm-release.s3.brave.com/brave-browser.repo -y
+sudo rpm --import https://brave-browser-rpm-release.s3.brave.com/brave-core.asc -y
+sudo dnf install brave-browser
 
 ##############################" Neovim "##############################
 echo -e "\033[0;34m*configuration de neovim\033[0m"
