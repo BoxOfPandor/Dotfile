@@ -1,0 +1,43 @@
+#!/usr/bin/env python3
+import os
+import argparse
+from PIL import Image
+import pillow_heif
+
+def convert_heic_to_jpg(directory, output_directory):
+    # Vérifier si le dossier de sortie existe, sinon le créer
+    if not os.path.exists(output_directory):
+        os.makedirs(output_directory)
+
+    # Parcourir tous les fichiers dans le dossier donné
+    for filename in os.listdir(directory):
+        if filename.lower().endswith(".heic"):
+            # Chemin complet du fichier
+            heic_file_path = os.path.join(directory, filename)
+
+            # Lire le fichier HEIC avec pillow_heif
+            heif_image = pillow_heif.open_heif(heic_file_path)
+            image = Image.frombytes(
+                heif_image.mode,
+                heif_image.size,
+                heif_image.data,
+                "raw",
+                heif_image.mode,
+                heif_image.stride,
+            )
+
+            # Définir le nouveau nom de fichier avec l'extension .jpg
+            jpg_file_name = os.path.splitext(filename)[0] + ".jpg"
+            jpg_file_path = os.path.join(output_directory, jpg_file_name)
+
+            # Sauvegarder l'image en format JPEG
+            image.save(jpg_file_path, "JPEG")
+            print(f"Converti {filename} en {os.path.basename(jpg_file_path)}")
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='Convert HEIC images to JPG.')
+    parser.add_argument('input_directory', type=str, help='The directory containing the HEIC images.')
+    parser.add_argument('output_directory', type=str, help='The directory where the converted images will be saved.')
+    args = parser.parse_args()
+
+    convert_heic_to_jpg(args.input_directory, args.output_directory)
