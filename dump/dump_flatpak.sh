@@ -25,6 +25,8 @@ flatpak install -y flathub com.github.IsmaelMartinez.teams_for_linux
 flatpak install -y flathub org.gnome.Boxes
 flatpak install -y flathub io.github.flattool.Warehouse
 flatpak install -y flathub com.raggesilver.BlackBox
+flatpak install -y flathub com.toolstack.Folio
+flatpak install -y flathub com.usebottles.bottles
 echo -e "\033[0;32mFinish Part\033[0m"
 
 echo -e "\033[32mLe script a terminé avec succès.\033[0m"

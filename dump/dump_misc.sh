@@ -9,6 +9,16 @@ if [ "$fedora_version" -lt 38 ]; then
     exit 1
 fi
 
+##############################" Sublime merge "##############################
+sudo rpm -v --import https://download.sublimetext.com/sublimehq-rpm-pub.gpg
+sudo dnf config-manager --add-repo https://download.sublimetext.com/rpm/stable/x86_64/sublime-text.repo
+sudo dnf install sublime-merge
+
+##############################" Sublime text "##############################
+sudo rpm -v --import https://download.sublimetext.com/sublimehq-rpm-pub.gpg
+sudo dnf config-manager --add-repo https://download.sublimetext.com/rpm/stable/x86_64/sublime-text.repo
+sudo dnf install sublime-text
+
 ##############################" Brave "##############################
 echo -e "\033[0;34mInstallation de Brave\033[0m"
 sudo dnf install dnf-plugins-core -y
