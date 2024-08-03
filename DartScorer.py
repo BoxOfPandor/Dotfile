@@ -96,7 +96,7 @@ class DartScorer:
 
         # Ajouter les lignes radiales pour délimiter les sections de points
         for i in range(20):
-            angle = i * 18 - 90  # Décaler de 90 degrés pour aligner le 20 en haut
+            angle = i * 18 - 90 + 9 # Décaler de 90 degrés pour aligner le 20 en haut
             x = 300 + 250 * math.cos(math.radians(angle))
             y = 300 - 250 * math.sin(math.radians(angle))
             self.canvas.create_line(300, 300, x, y, fill="black")
@@ -107,7 +107,7 @@ class DartScorer:
         # Ajouter les numéros autour de la cible
         self.numbers = [20, 1, 18, 4, 13, 6, 10, 15, 2, 17, 3, 19, 7, 16, 8, 11, 14, 9, 12, 5]
         for i, num in enumerate(self.numbers):
-            angle = (i * 18 + 90) + 9  # Décaler de 90 degrés pour aligner le 20 en haut et ajouter 9 degrés pour positionner entre les lignes
+            angle = (i * 18 + 90)  # Décaler de 90 degrés pour aligner le 20 en haut et ajouter 9 degrés pour positionner entre les lignes
             x = 300 + 270 * math.cos(math.radians(angle))
             y = 300 - 270 * math.sin(math.radians(angle))
             self.canvas.create_text(x, y, text=str(num), font=("Arial", 12), fill="black")
@@ -144,7 +144,7 @@ class DartScorer:
         dx = x - 300
         dy = 300 - y
         distance = math.sqrt(dx**2 + dy**2)
-        angle = math.degrees(math.atan2(dy, dx)) + 270
+        angle = math.degrees(math.atan2(dy, dx)) + 270 + 9  # Décaler de 270 degrés pour aligner le 20 en haut et ajouter 9 degrés pour positionner entre les lignes
         if angle >= 360:
             angle -= 360
 
