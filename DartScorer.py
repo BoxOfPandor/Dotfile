@@ -1,29 +1,82 @@
 import tkinter as tk
-from tkinter import messagebox
+from tkinter import messagebox, simpledialog
 import math
 
-class DartScorer:
+class PlayerSelection:
     def __init__(self, root):
         self.root = root
-        self.root.title("Compteur de points de fléchettes")
+        self.root.title("Sélection des joueurs")
 
-        # Liste des points
-        self.points_listbox = tk.Listbox(root, height=20, width=30)
-        self.points_listbox.pack(side=tk.LEFT, padx=10, pady=10)
+        self.num_players_label = tk.Label(root, text="Nombre de joueurs:")
+        self.num_players_label.pack()
 
-        # Cible
-        self.canvas = tk.Canvas(root, width=600, height=600, bg="white")
-        self.canvas.pack(side=tk.RIGHT, padx=10, pady=10)
-        self.draw_target()
+        self.num_players_entry = tk.Entry(root)
+        self.num_players_entry.pack()
 
-        # Bouton de réinitialisation
-        self.reset_button = tk.Button(root, text="Réinitialiser", command=self.reset_game)
-        self.reset_button.pack(side=tk.BOTTOM, pady=10)
+        self.names_frame = tk.Frame(root)
+        self.names_frame.pack()
 
-        # Variables de points
+        self.names_entries = []
+
+        self.num_players_entry.bind("<Return>", self.create_name_entries)
+
+        self.launch_button = tk.Button(root, text="Lancer", command=self.launch_game)
+        self.launch_button.pack()
+
+    def create_name_entries(self, event):
+        for entry in self.names_entries:
+            entry.destroy()
+        self.names_entries = []
+
+        try:
+            num_players = int(self.num_players_entry.get())
+            for i in range(num_players):
+                label = tk.Label(self.names_frame, text=f"Nom du joueur {i+1}:")
+                label.pack()
+                entry = tk.Entry(self.names_frame)
+                entry.pack()
+                self.names_entries.append(entry)
+        except ValueError:
+            pass
+
+    def launch_game(self):
+        player_names = [entry.get() for entry in self.names_entries]
+        self.root.destroy()
+        main(player_names)
+
+
+class DartScorer:
+    def __init__(self, root, player_names):
+        self.root = root
+        self.root.title("Dart Scorer")
+
+        self.player_names = player_names
         self.total_points = 0
         self.turn_points = []
-        self.click_points = []  # Liste pour garder une trace des clics
+        self.click_points = []
+
+        self.left_frame = tk.Frame(root)
+        self.left_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+
+        self.player_listboxes = []
+        for name in player_names:
+            player_frame = tk.Frame(self.left_frame)
+            player_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+
+            label = tk.Label(player_frame, text=name)
+            label.pack()
+
+            listbox = tk.Listbox(player_frame)
+            listbox.pack(fill=tk.BOTH, expand=True)
+
+            self.player_listboxes.append(listbox)
+
+        self.canvas = tk.Canvas(root, width=600, height=600, bg="white")
+        self.canvas.pack(side=tk.RIGHT)
+
+        self.draw_target()
+
+        self.canvas.bind("<Button-1>", self.on_click)
 
     def draw_target(self):
         # Dessiner les sections de la cible
@@ -76,31 +129,28 @@ class DartScorer:
             self.click_points = []
 
     def get_section_value(self, x, y):
-        # Calculer l'angle et la distance du clic par rapport au centre
         dx = x - 300
         dy = 300 - y
         distance = math.sqrt(dx**2 + dy**2)
-        angle = math.degrees(math.atan2(dy, dx)) + 270  # Ajouter 270 degrés pour faire un demi-tour de cercle
+        angle = math.degrees(math.atan2(dy, dx)) + 270
         if angle >= 360:
             angle -= 360
 
-        # Déterminer la section en fonction de l'angle
         section_index = int(angle // 18) % 20
         if distance <= 10:
-            return 50  # Bullseye
+            return 50
         elif distance <= 25:
-            return 25  # Inner bullseye
+            return 25
         elif 100 <= distance <= 150:
-            return self.numbers[section_index] * 3  # Triple ring
+            return self.numbers[section_index] * 3
         elif 200 <= distance <= 250:
-            return self.numbers[section_index] * 2  # Double ring
+            return self.numbers[section_index] * 2
         elif distance <= 300:
-            return self.numbers[section_index]  # Single ring
+            return self.numbers[section_index]
         else:
-            return None  # Outside the target
+            return None
 
     def reset_game(self):
-        # Réinitialiser les points et la liste des points
         self.total_points = 0
         self.turn_points = []
         self.points_listbox.delete(0, tk.END)
@@ -108,7 +158,12 @@ class DartScorer:
         self.draw_target()
         self.click_points = []
 
+def main(player_names):
+    root = tk.Tk()
+    app = DartScorer(root, player_names)
+    root.mainloop()
+
 if __name__ == "__main__":
     root = tk.Tk()
-    app = DartScorer(root)
+    player_selection = PlayerSelection(root)
     root.mainloop()
