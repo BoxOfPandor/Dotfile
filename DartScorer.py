@@ -59,6 +59,8 @@ class DartScorer:
         self.left_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
         self.player_listboxes = []
+        self.selected_player = None
+
         for name in player_names:
             player_frame = tk.Frame(self.left_frame)
             player_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
@@ -71,12 +73,19 @@ class DartScorer:
 
             self.player_listboxes.append(listbox)
 
+            button = tk.Button(player_frame, text="Sélectionner", command=lambda n=name: self.select_player(n))
+            button.pack()
+
         self.canvas = tk.Canvas(root, width=600, height=600, bg="white")
         self.canvas.pack(side=tk.RIGHT)
 
         self.draw_target()
 
         self.canvas.bind("<Button-1>", self.on_click)
+
+        # Ajouter le bouton "Réinitialiser"
+        reset_button = tk.Button(root, text="Réinitialiser", command=self.reset_target)
+        reset_button.pack(side=tk.BOTTOM)
 
     def draw_target(self):
         # Dessiner les sections de la cible
@@ -103,11 +112,12 @@ class DartScorer:
             y = 300 - 270 * math.sin(math.radians(angle))
             self.canvas.create_text(x, y, text=str(num), font=("Arial", 12), fill="black")
 
-        # Associer les clics sur la cible
-        self.canvas.bind("<Button-1>", self.on_click)
+
+    def select_player(self, player_name):
+        self.selected_player = player_name
+        print(f"Joueur sélectionné : {self.selected_player}")
 
     def on_click(self, event):
-        # Dessiner un point noir plus petit à l'emplacement du clic
         x, y = event.x, event.y
         self.click_points.append((x, y))
         self.canvas.create_oval(x-3, y-3, x+3, y+3, fill="black", outline="black")
@@ -115,7 +125,10 @@ class DartScorer:
         # Déterminer la valeur de la section cliquée
         value = self.get_section_value(x, y)
         if value is not None:
-            self.points_listbox.insert(tk.END, f"Points: {value}")
+            # Ajouter les points au joueur sélectionné
+            if self.selected_player is not None:
+                index = self.player_names.index(self.selected_player)
+                self.player_listboxes[index].insert(tk.END, f"Points: {value}")
 
         # Vérifier si l'utilisateur a cliqué 4 fois
         if len(self.click_points) == 4:
@@ -123,7 +136,6 @@ class DartScorer:
             for _ in range(3):
                 x, y = self.click_points.pop(0)
                 self.canvas.create_oval(x-2, y-2, x+2, y+2, fill="white", outline="white")
-                self.points_listbox.delete(tk.END)
 
             # Réinitialiser la liste des clics
             self.click_points = []
@@ -150,13 +162,11 @@ class DartScorer:
         else:
             return None
 
-    def reset_game(self):
-        self.total_points = 0
-        self.turn_points = []
-        self.points_listbox.delete(0, tk.END)
+    def reset_target(self):
         self.canvas.delete("all")
         self.draw_target()
         self.click_points = []
+
 
 def main(player_names):
     root = tk.Tk()
