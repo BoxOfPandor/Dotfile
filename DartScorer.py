@@ -45,10 +45,10 @@ class DartScorer:
         # Ajouter les numéros autour de la cible
         self.numbers = [20, 1, 18, 4, 13, 6, 10, 15, 2, 17, 3, 19, 7, 16, 8, 11, 14, 9, 12, 5]
         for i, num in enumerate(self.numbers):
-            angle = i * 18 - 90  # Décaler de 90 degrés pour aligner le 20 en haut
+            angle = (i * 18 + 90) + 9  # Décaler de 90 degrés pour aligner le 20 en haut et ajouter 9 degrés pour positionner entre les lignes
             x = 300 + 270 * math.cos(math.radians(angle))
             y = 300 - 270 * math.sin(math.radians(angle))
-            self.canvas.create_text(x, y, text=str(num), font=("Arial", 12))
+            self.canvas.create_text(x, y, text=str(num), font=("Arial", 12), fill="black")
 
         # Associer les clics sur la cible
         self.canvas.bind("<Button-1>", self.on_click)
@@ -80,10 +80,8 @@ class DartScorer:
         dx = x - 300
         dy = 300 - y
         distance = math.sqrt(dx**2 + dy**2)
-        angle = math.degrees(math.atan2(dy, dx)) + 90 + 180  # Ajouter 180 degrés pour faire un demi-tour
-        if angle < 0:
-            angle += 360
-        elif angle >= 360:
+        angle = math.degrees(math.atan2(dy, dx)) + 270  # Ajouter 270 degrés pour faire un demi-tour de cercle
+        if angle >= 360:
             angle -= 360
 
         # Déterminer la section en fonction de l'angle
@@ -92,12 +90,12 @@ class DartScorer:
             return 50  # Bullseye
         elif distance <= 25:
             return 25  # Inner bullseye
-        elif distance <= 200:
+        elif 100 <= distance <= 150:
             return self.numbers[section_index] * 3  # Triple ring
-        elif distance <= 250:
-            return self.numbers[section_index]  # Single ring
-        elif distance <= 300:
+        elif 200 <= distance <= 250:
             return self.numbers[section_index] * 2  # Double ring
+        elif distance <= 300:
+            return self.numbers[section_index]  # Single ring
         else:
             return None  # Outside the target
 
@@ -109,7 +107,6 @@ class DartScorer:
         self.canvas.delete("all")
         self.draw_target()
         self.click_points = []
-        messagebox.showinfo("Réinitialiser", "Le jeu a été réinitialisé.")
 
 if __name__ == "__main__":
     root = tk.Tk()
