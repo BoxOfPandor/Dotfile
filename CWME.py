@@ -34,6 +34,10 @@ class ChatApp:
         self.messages_text = tk.Text(self.right_frame, state=tk.DISABLED)
         self.messages_text.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 
+        # Ajouter des tags pour aligner le texte
+        self.messages_text.tag_configure("left", justify='left')
+        self.messages_text.tag_configure("right", justify='right')
+
         self.entry_frame = tk.Frame(self.right_frame)
         self.entry_frame.pack(side=tk.BOTTOM, fill=tk.X)
 
@@ -80,7 +84,10 @@ class ChatApp:
         self.messages_text.config(state=tk.NORMAL)
         self.messages_text.delete(1.0, tk.END)
         for message in self.chats[chat_name]:
-            self.messages_text.insert(tk.END, message + "\n")
+            if message.startswith("Vous:"):
+                self.messages_text.insert(tk.END, message + "\n", "left")
+            else:
+                self.messages_text.insert(tk.END, message + "\n", "right")
         self.messages_text.config(state=tk.DISABLED)
 
     def send_message(self, event=None):
